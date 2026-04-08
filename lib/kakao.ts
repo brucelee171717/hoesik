@@ -1,6 +1,7 @@
 // 카카오 로컬 API - 서버사이드 전용
 // 모듈 스코프가 아닌 함수 호출 시점에 읽어야 Railway 환경변수가 주입됨
-const getKey = () => process.env.KAKAO_REST_API_KEY ?? "";;
+// 괄호 표기법 사용 → webpack이 빌드 시 undefined로 인라인하지 못함
+const getKey = () => (process["env"] as Record<string, string>)["KAKAO_REST_API_KEY"] ?? "";;
 
 export interface KakaoPlace {
   id: string;

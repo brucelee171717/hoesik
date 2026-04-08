@@ -1,5 +1,5 @@
 // ODsay 대중교통 경로 API - 서버사이드 전용
-const getOdsayKey = () => process.env.ODSAY_API_KEY ?? "";
+const getOdsayKey = () => (process["env"] as Record<string, string>)["ODSAY_API_KEY"] ?? "";
 
 interface OdsayRoute {
   totalTime: number; // 총 소요시간 (분)
