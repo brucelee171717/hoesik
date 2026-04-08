@@ -19,12 +19,7 @@ const CUISINE_KEYWORDS: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
-  // 런타임 환경변수 디버그
-  const kakaoKey = (process["env"] as Record<string,string>)["KAKAO_REST_API_KEY"];
-  console.log("[debug] KAKAO_REST_API_KEY exists:", !!kakaoKey, "length:", kakaoKey?.length);
-  console.log("[debug] All env keys:", Object.keys(process.env).filter(k => k.includes("KAKAO") || k.includes("ODSAY")));
-
-  const { participants, conditions }: { participants: Participant[]; conditions: Conditions } =
+const { participants, conditions }: { participants: Participant[]; conditions: Conditions } =
     await req.json();
 
   if (!participants || participants.length === 0) {
