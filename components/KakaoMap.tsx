@@ -21,15 +21,6 @@ export default function KakaoMap({ centerLat, centerLng, hotzoneName, restaurant
   const [debugMsg, setDebugMsg] = useState<string>("초기화 중...");
 
   useEffect(() => {
-    const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
-
-    if (!jsKey) {
-      setDebugMsg("JS 키 없음 (NEXT_PUBLIC_KAKAO_JS_KEY 미설정)");
-      return;
-    }
-
-    setDebugMsg(`키 확인: ${jsKey.slice(0, 6)}...`);
-
     const initMap = () => {
       if (!mapRef.current) {
         setDebugMsg("mapRef 없음");
@@ -69,22 +60,35 @@ export default function KakaoMap({ centerLat, centerLng, hotzoneName, restaurant
       });
     };
 
-    if (window.kakao?.maps) {
-      initMap();
-      return;
-    }
+    const loadSdk = (jsKey: string) => {
+      if (window.kakao?.maps) {
+        initMap();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsKey}&autoload=false`;
+      script.async = true;
+      script.onload = () => {
+        setDebugMsg("SDK 로드 완료, 지도 초기화 중...");
+        initMap();
+      };
+      script.onerror = () => {
+        setDebugMsg("SDK 스크립트 로드 실패 (도메인 미등록 또는 키 오류)");
+      };
+      document.head.appendChild(script);
+    };
 
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${jsKey}&autoload=false`;
-    script.async = true;
-    script.onload = () => {
-      setDebugMsg("SDK 로드 완료, 지도 초기화 중...");
-      initMap();
-    };
-    script.onerror = () => {
-      setDebugMsg("SDK 스크립트 로드 실패 (도메인 미등록 또는 키 오류)");
-    };
-    document.head.appendChild(script);
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then(({ kakaoJsKey }) => {
+        if (!kakaoJsKey) {
+          setDebugMsg("JS 키 없음 (Railway에 KAKAO_JS_KEY 미설정)");
+          return;
+        }
+        setDebugMsg(`키 확인: ${kakaoJsKey.slice(0, 6)}...`);
+        loadSdk(kakaoJsKey);
+      })
+      .catch(() => setDebugMsg("/api/config 요청 실패"));
   }, [centerLat, centerLng, hotzoneName, restaurants]);
 
   return (
