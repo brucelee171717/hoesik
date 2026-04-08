@@ -21,7 +21,7 @@ export default function KakaoMap({ centerLat, centerLng, hotzoneName, restaurant
   const mapInstance = useRef<any>(null);
 
   useEffect(() => {
-    const jsKey = (process["env"] as Record<string, string>)["NEXT_PUBLIC_KAKAO_JS_KEY"];
+    const jsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY;
 
     const initMap = () => {
       if (!mapRef.current || !window.kakao?.maps) return;
