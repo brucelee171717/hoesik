@@ -34,7 +34,7 @@ export interface OutlierNote {
 // workTime 40%, homeTime 40%, taxiScore 20%
 function calcScore(avgWorkTime: number, avgHomeTime: number, taxiScore: number): number {
   const timeScore = avgWorkTime * 0.4 + avgHomeTime * 0.4;
-  const taxiBonus = (5 - taxiScore) * 5; // 택시 좋을수록 패널티 감소
+  const taxiBonus = (5 - taxiScore) * 2; // 택시 좋을수록 패널티 감소
   return timeScore + taxiBonus;
 }
 
