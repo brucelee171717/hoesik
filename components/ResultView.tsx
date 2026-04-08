@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useAppStore } from "@/store/useAppStore";
 import { HotzoneScore } from "@/lib/scoring";
 import { KakaoPlace } from "@/lib/kakao";
 import { scoreRestaurant } from "@/lib/restaurantScore";
 import { EnrichedOutlier } from "@/lib/transitHints";
+
+const KakaoMap = dynamic(() => import("./KakaoMap"), { ssr: false });
 
 interface ResultItem extends Omit<HotzoneScore, "outliers"> {
   restaurants: KakaoPlace[];
@@ -235,6 +238,16 @@ export default function ResultView() {
               </span>
             </div>
           ))}
+        </div>
+
+        {/* 지도 */}
+        <div className="mb-4 overflow-hidden rounded-2xl">
+          <KakaoMap
+            centerLat={top.hotzone.lat}
+            centerLng={top.hotzone.lng}
+            hotzoneName={top.hotzone.name}
+            restaurants={top.restaurants}
+          />
         </div>
 
         {/* 식당 리스트 */}
