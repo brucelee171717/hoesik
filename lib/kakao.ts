@@ -1,5 +1,6 @@
 // 카카오 로컬 API - 서버사이드 전용
-const KAKAO_REST_KEY = process.env.KAKAO_REST_API_KEY!;
+// 모듈 스코프가 아닌 함수 호출 시점에 읽어야 Railway 환경변수가 주입됨
+const getKey = () => process.env.KAKAO_REST_API_KEY ?? "";;
 
 export interface KakaoPlace {
   id: string;
@@ -20,7 +21,7 @@ export async function getStationCoords(stationName: string): Promise<{ lat: numb
   const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query)}&category_group_code=SW8&size=1`;
 
   const res = await fetch(url, {
-    headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` },
+    headers: { Authorization: `KakaoAK ${getKey()}` },
   });
 
   if (!res.ok) {
@@ -47,7 +48,7 @@ export async function searchRestaurants(params: {
 
   const fetchCategory = async () => {
     const url = `https://dapi.kakao.com/v2/local/search/category.json?category_group_code=FD6&x=${lng}&y=${lat}&radius=${radius}&sort=distance&size=15`;
-    const res = await fetch(url, { headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` } });
+    const res = await fetch(url, { headers: { Authorization: `KakaoAK ${getKey()}` } });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.documents ?? []) as KakaoPlace[];
@@ -55,7 +56,7 @@ export async function searchRestaurants(params: {
 
   const fetchKeyword = async (keyword: string) => {
     const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&category_group_code=FD6&x=${lng}&y=${lat}&radius=${radius}&sort=distance&size=10`;
-    const res = await fetch(url, { headers: { Authorization: `KakaoAK ${KAKAO_REST_KEY}` } });
+    const res = await fetch(url, { headers: { Authorization: `KakaoAK ${getKey()}` } });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.documents ?? []) as KakaoPlace[];

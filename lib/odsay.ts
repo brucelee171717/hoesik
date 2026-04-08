@@ -1,5 +1,5 @@
 // ODsay 대중교통 경로 API - 서버사이드 전용
-const ODSAY_KEY = process.env.ODSAY_API_KEY!;
+const getOdsayKey = () => process.env.ODSAY_API_KEY ?? "";
 
 interface OdsayRoute {
   totalTime: number; // 총 소요시간 (분)
@@ -14,11 +14,12 @@ export async function getTransitTime(
   endLng: number
 ): Promise<number> {
   // Mock 데이터: API 키 없을 때 사용
-  if (!ODSAY_KEY || ODSAY_KEY.includes("여기에")) {
+  const key = getOdsayKey();
+  if (!key || key.includes("여기에")) {
     return getMockTransitTime(startLat, startLng, endLat, endLng);
   }
 
-  const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${startLng}&SY=${startLat}&EX=${endLng}&EY=${endLat}&apiKey=${encodeURIComponent(ODSAY_KEY)}`;
+  const url = `https://api.odsay.com/v1/api/searchPubTransPathT?SX=${startLng}&SY=${startLat}&EX=${endLng}&EY=${endLat}&apiKey=${encodeURIComponent(key)}`;
 
   try {
     const res = await fetch(url);
