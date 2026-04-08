@@ -9,7 +9,7 @@ const STEPS = ["참석자", "조건", "결과"];
 const STEP_MAP = { participants: 0, conditions: 1, result: 2 };
 
 export default function Home() {
-  const { step } = useAppStore();
+  const { step, reset } = useAppStore();
   const currentStep = STEP_MAP[step];
 
   return (
@@ -19,7 +19,7 @@ export default function Home() {
       <div className="w-full max-w-md">
         {/* 헤더 */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-3">
+          <div className="inline-flex items-center gap-2 mb-3 cursor-pointer" onClick={reset}>
             <div className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
               style={{ background: "linear-gradient(135deg, #7c3aed, #10b981)" }}>
               🍽
